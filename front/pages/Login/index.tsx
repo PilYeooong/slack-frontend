@@ -7,7 +7,7 @@ import { Link, Redirect } from 'react-router-dom';
 import useSWR from 'swr';
 
 const Login = () => {
-  const { data, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {});
+  const { data, revalidate } = useSWR('/api/users', fetcher, {});
   const [logInError, setLogInError] = useState<boolean>(false);
   const [email, onChangeEmail] = useInput<string>('pilyeooong@gmail.com');
   const [password, onChangePassword] = useInput<string>('123');
@@ -17,15 +17,13 @@ const Login = () => {
       setLogInError(false);
       axios
         .post(
-          'http://localhost:3095/api/users/login',
+          '/api/users/login',
           { email, password },
           {
             withCredentials: true,
           },
         )
-        .then((response) => {
-          mutate(response.data, false);
-        })
+        .then((response) => revalidate())
         .catch((error) => {
           setLogInError(error.response?.data?.statusCode === 401);
         });
@@ -38,7 +36,7 @@ const Login = () => {
   }
 
   if (data) {
-    return <Redirect to="/workspace/channel" />;
+    return <Redirect to="/workspace/sleact/channel/일반" />;
   }
   return (
     <div id="container">
